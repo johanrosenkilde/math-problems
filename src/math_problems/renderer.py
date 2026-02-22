@@ -8,30 +8,32 @@ _PREAMBLE = """\
 #set page(paper: "a4", margin: (x: 2cm, y: 2.5cm))
 #set text(font: "New Computer Modern")
 
-#let problem(num, a, b) = {
+#let problem(num, a, b) = context {
+  let inner = grid(
+    columns: (auto, auto),
+    column-gutter: 0pt,
+    row-gutter: 18pt,
+    align: (left, right),
+    [], text(size: 40pt)[#a],
+    text(size: 40pt)[+], text(size: 40pt)[#b],
+  )
+  let w = measure(inner).width
   grid(
-    columns: (auto, 2cm),
+    columns: (auto, auto),
     column-gutter: 8pt,
     align: (right + top, left + top),
     text(size: 14pt, weight: "bold")[#num.],
-    [
-      #v(10pt)
-      #grid(
-        columns: (0.8cm, 1.2cm),
-        column-gutter: 0pt,
-        row-gutter: 18pt,
-        align: (left, right),
-        [], [#text(size: 40pt)[#a]],
-        [#text(size: 40pt)[+]], [#text(size: 40pt)[#b]],
-      )
-      #v(2pt)
-      #line(length: 100%, stroke: 1.5pt)
-      #v(30pt)
-      #line(length: 100%, stroke: 1.5pt)
-      #v(-8pt)
-      #line(length: 100%, stroke: 1.5pt)
-      #v(1cm)
-    ]
+    {
+      v(10pt)
+      inner
+      v(2pt)
+      line(length: w, stroke: 1.5pt)
+      v(30pt)
+      line(length: w, stroke: 1.5pt)
+      v(-8pt)
+      line(length: w, stroke: 1.5pt)
+      v(1cm)
+    }
   )
 }
 """

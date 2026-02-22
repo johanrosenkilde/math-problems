@@ -1,6 +1,6 @@
 import pytest
 
-from math_problems.problems import generate_addition_problems
+from math_problems.problems import _DIFFICULTY_RANGES, generate_addition_problems
 
 
 def test_returns_nine_problems():
@@ -18,25 +18,13 @@ def test_returns_tuples_of_ints():
         assert all(isinstance(v, int) for v in problem)
 
 
-def test_difficulty_1_range():
-    problems = generate_addition_problems(n=50, difficulty=1)
+@pytest.mark.parametrize("difficulty", _DIFFICULTY_RANGES)
+def test_difficulty_range(difficulty):
+    low, high = _DIFFICULTY_RANGES[difficulty]
+    problems = generate_addition_problems(n=50, difficulty=difficulty)
     for a, b in problems:
-        assert 1 <= a <= 9
-        assert 1 <= b <= 9
-
-
-def test_difficulty_2_range():
-    problems = generate_addition_problems(n=50, difficulty=2)
-    for a, b in problems:
-        assert 10 <= a <= 50
-        assert 10 <= b <= 50
-
-
-def test_difficulty_3_range():
-    problems = generate_addition_problems(n=50, difficulty=3)
-    for a, b in problems:
-        assert 50 <= a <= 250
-        assert 50 <= b <= 250
+        assert low <= a <= high
+        assert low <= b <= high
 
 
 def test_invalid_difficulty():

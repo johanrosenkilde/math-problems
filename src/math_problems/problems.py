@@ -2,8 +2,8 @@ import random
 
 _DIFFICULTY_RANGES: dict[int, tuple[int, int]] = {
     1: (1, 9),
-    2: (10, 50),
-    3: (50, 250),
+    2: (10, 99),
+    3: (100, 499),
 }
 
 
