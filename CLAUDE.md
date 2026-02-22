@@ -6,13 +6,21 @@ CLI tool that generates printable PDF math problem sheets for elementary school 
 
 ```
 src/math_problems/
-  problems.py   — problem generation (pure Python, no I/O)
-  renderer.py   — builds Typst source string, compiles to PDF bytes
-  cli.py        — typer entry point, writes math_problems.pdf
+  module.py      — Module ABC (title, generate, typst_preamble, page_source)
+  addition.py    — AdditionProblem dataclass + AdditionModule
+  subtraction.py — SubtractionProblem dataclass + SubtractionModule
+  renderer.py    — build_typ_source(module, problems), render_pdf(module, problems)
+  cli.py         — typer entry point, writes math_problems.pdf
 tests/
-  test_problems.py  — unit tests for generation logic
-  test_renderer.py  — tests for Typst source content and PDF output validity
+  test_addition.py    — unit tests for AdditionProblem and AdditionModule
+  test_subtraction.py — unit tests for SubtractionProblem and SubtractionModule
+  test_renderer.py    — tests for Typst source content and PDF output validity
 ```
+
+## Adding a new problem type
+
+1. Create `src/math_problems/<type>.py` with a `<Type>Problem` dataclass and `<Type>Module(Module)`.
+2. Add `tests/test_<type>.py` mirroring the structure of `test_addition.py`.
 
 ## Tech decisions
 
@@ -20,3 +28,7 @@ tests/
 - **typer** for the CLI.
 - **Typst** (via the `typst` PyPI package) for PDF generation.
 - Typst source is built as a Python f-string in `renderer.py` — no separate `.typ` template file, keeping generation logic in one place
+
+## Workflow
+
+- Never suggest or initiate a git commit. Only commit when explicitly asked.
