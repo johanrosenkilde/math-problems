@@ -7,14 +7,16 @@ CLI tool that generates printable PDF math problem sheets for elementary school 
 ```
 src/math_problems/
   module.py      — Module ABC (title, generate, typst_preamble, page_source)
-  addition.py    — AdditionProblem dataclass + AdditionModule
-  subtraction.py — SubtractionProblem dataclass + SubtractionModule
-  renderer.py    — build_typ_source(module, problems), render_pdf(module, problems)
+  addition.py        — AdditionProblem dataclass + AdditionModule
+  subtraction.py     — SubtractionProblem dataclass + SubtractionModule
+  multiplication.py  — MultiplicationProblem dataclass + MultiplicationModule (asymmetric difficulty ranges)
+  renderer.py        — build_typ_source(pages), render_pdf(pages)
   cli.py         — typer entry point, writes math_problems.pdf
 tests/
-  test_addition.py    — unit tests for AdditionProblem and AdditionModule
-  test_subtraction.py — unit tests for SubtractionProblem and SubtractionModule
-  test_renderer.py    — tests for Typst source content and PDF output validity
+  test_addition.py       — unit tests for AdditionProblem and AdditionModule
+  test_subtraction.py    — unit tests for SubtractionProblem and SubtractionModule
+  test_multiplication.py — unit tests for MultiplicationProblem and MultiplicationModule
+  test_renderer.py       — tests for Typst source content and PDF output validity
 ```
 
 ## Adding a new problem type
@@ -31,4 +33,4 @@ tests/
 
 ## Workflow
 
-- Never suggest or initiate a git commit. Only commit when explicitly asked.
+- Never suggest or initiate a git commit. Only commit when explicitly asked. Add and commit in the same suggested command.
