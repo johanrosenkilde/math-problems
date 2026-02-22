@@ -63,9 +63,7 @@ def _page_source(problems: list[tuple[int, int]], start_num: int) -> str:
   )
 ]
 
-#v(1fr)
-
-#align(center)[
+#place(bottom + center)[
   #rotate(180deg)[
     #text(size: 12pt)[{answer_text}]
   ]
