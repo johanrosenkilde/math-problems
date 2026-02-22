@@ -10,7 +10,7 @@ def build_typ_source(problems: list[tuple[int, int]]) -> str:
         f"problem({i}, {a}, {b})"
         for i, (a, b) in enumerate(problems, start=1)
     )
-    answer_text = "#h(1.2cm)".join(
+    answer_text = "#h(1cm)".join(
         f"{i}. {a + b}"
         for i, (a, b) in enumerate(problems, start=1)
     )
@@ -21,22 +21,27 @@ def build_typ_source(problems: list[tuple[int, int]]) -> str:
 
 #let problem(num, a, b) = {{
   grid(
-    columns: (auto, 1.8cm),
-    column-gutter: 3pt,
+    columns: (auto, 2cm),
+    column-gutter: 8pt,
     align: (right + top, left + top),
     text(size: 14pt, weight: "bold")[#num.],
     [
+      #v(10pt)
       #grid(
-        columns: (0.6cm, 1.2cm),
+        columns: (0.8cm, 1.2cm),
         column-gutter: 0pt,
-        row-gutter: 14pt,
+        row-gutter: 18pt,
         align: (left, right),
         [], [#text(size: 40pt)[#a]],
         [#text(size: 40pt)[+]], [#text(size: 40pt)[#b]],
       )
       #v(2pt)
       #line(length: 100%, stroke: 1.5pt)
-      #v(2cm)
+      #v(30pt)
+      #line(length: 100%, stroke: 1.5pt)
+      #v(-8pt)
+      #line(length: 100%, stroke: 1.5pt)
+      #v(1cm)
     ]
   )
 }}
@@ -51,7 +56,7 @@ def build_typ_source(problems: list[tuple[int, int]]) -> str:
   #grid(
     columns: (auto, auto, auto),
     column-gutter: 2.5cm,
-    row-gutter: 1.2cm,
+    row-gutter: 1.6cm,
     {problem_calls}
   )
 ]
