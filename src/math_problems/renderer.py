@@ -6,11 +6,11 @@ import typst
 
 def build_typ_source(problems: list[tuple[int, int]]) -> str:
     """Build a Typst source string for a page of 9 addition problems."""
-    problem_calls = ",\n  ".join(
+    problem_calls = ",\n    ".join(
         f"problem({i}, {a}, {b})"
         for i, (a, b) in enumerate(problems, start=1)
     )
-    answer_text = "   ".join(
+    answer_text = "#h(1.2cm)".join(
         f"{i}. {a + b}"
         for i, (a, b) in enumerate(problems, start=1)
     )
@@ -20,13 +20,16 @@ def build_typ_source(problems: list[tuple[int, int]]) -> str:
 #set text(font: "New Computer Modern")
 
 #let problem(num, a, b) = {{
-  align(center)[
-    #text(size: 18pt, weight: "bold")[#num.]
-    #v(4pt)
-    #box(width: 1.8cm)[
+  grid(
+    columns: (auto, 1.8cm),
+    column-gutter: 3pt,
+    align: (right + top, left + top),
+    text(size: 14pt, weight: "bold")[#num.],
+    [
       #grid(
         columns: (0.6cm, 1.2cm),
-        row-gutter: 8pt,
+        column-gutter: 0pt,
+        row-gutter: 14pt,
         align: (left, right),
         [], [#text(size: 40pt)[#a]],
         [#text(size: 40pt)[+]], [#text(size: 40pt)[#b]],
@@ -35,13 +38,19 @@ def build_typ_source(problems: list[tuple[int, int]]) -> str:
       #line(length: 100%, stroke: 1.5pt)
       #v(2cm)
     ]
-  ]
+  )
 }}
+
+#align(center)[
+  #text(size: 24pt, weight: "bold")[Addition]
+]
+
+#v(0.8cm)
 
 #align(center)[
   #grid(
     columns: (auto, auto, auto),
-    column-gutter: 1.5cm,
+    column-gutter: 2.5cm,
     row-gutter: 1.2cm,
     {problem_calls}
   )
