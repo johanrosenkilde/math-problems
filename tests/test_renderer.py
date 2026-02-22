@@ -29,9 +29,9 @@ def test_typ_source_contains_answers():
         assert f"{i}. {p.result}" in source
 
 
-def test_typ_source_has_upside_down_block():
+def test_typ_source_has_answer_block():
     source = build_typ_source(PAGES)
-    assert "rotate(180deg)" in source
+    assert "place(bottom + center)" in source
 
 
 def test_typ_source_has_problem_numbering():

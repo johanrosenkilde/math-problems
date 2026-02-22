@@ -95,7 +95,5 @@ class AdditionModule(Module):
 ]
 
 #place(bottom + center)[
-  #rotate(180deg)[
-    #text(size: 12pt)[{answer_text}]
-  ]
+  #text(size: 12pt)[{answer_text}]
 ]"""
