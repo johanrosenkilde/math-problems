@@ -2,7 +2,7 @@ from pathlib import Path
 
 import typer
 
-from math_problems.problems import generate_addition_problems
+from math_problems.addition import AdditionModule
 from math_problems.renderer import render_pdf
 
 app = typer.Typer()
@@ -19,10 +19,11 @@ def main(
     ),
 ) -> None:
     """Generate a PDF with 9 addition problems per page."""
+    module = AdditionModule()
     try:
-        problems = generate_addition_problems(n=9 * pages, difficulty=difficulty)
+        problems = module.generate(n=9 * pages, difficulty=difficulty)
     except ValueError as e:
         raise typer.BadParameter(str(e))
-    pdf_bytes = render_pdf(problems)
+    pdf_bytes = render_pdf(module, problems)
     output.write_bytes(pdf_bytes)
     typer.echo(f"Saved {output} ({pages} page{'s' if pages != 1 else ''})")

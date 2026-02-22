@@ -1,92 +1,27 @@
 import os
 import tempfile
+from typing import Any
 
 import typst
 
-
-_PREAMBLE = """\
-#set page(paper: "a4", margin: (x: 2cm, y: 2.5cm))
-#set text(font: "New Computer Modern")
-
-#let problem(num, a, b) = context {
-  let inner = grid(
-    columns: (auto, auto),
-    column-gutter: 0pt,
-    row-gutter: 18pt,
-    align: (left, right),
-    [], text(size: 40pt)[#a],
-    text(size: 40pt)[+], text(size: 40pt)[#b],
-  )
-  let w = measure(inner).width
-  grid(
-    columns: (auto, auto),
-    column-gutter: 8pt,
-    align: (right + top, left + top),
-    text(size: 14pt, weight: "bold")[#num.],
-    {
-      v(10pt)
-      inner
-      v(2pt)
-      line(length: w, stroke: 1.5pt)
-      v(30pt)
-      line(length: w, stroke: 1.5pt)
-      v(-8pt)
-      line(length: w, stroke: 1.5pt)
-      v(1cm)
-    }
-  )
-}
-"""
+from math_problems.module import Module
 
 
-def _page_source(problems: list[tuple[int, int]], start_num: int) -> str:
-    """Build Typst content for a single page, with problem numbers starting at start_num."""
-    problem_calls = ",\n    ".join(
-        f"problem({start_num + i}, {a}, {b})"
-        for i, (a, b) in enumerate(problems)
-    )
-    answer_text = "#h(1cm)".join(
-        f"{start_num + i}. {a + b}"
-        for i, (a, b) in enumerate(problems)
-    )
-    return f"""\
-#align(center)[
-  #text(size: 24pt, weight: "bold")[Addition]
-]
-
-#v(0.8cm)
-
-#align(center)[
-  #grid(
-    columns: (auto, auto, auto),
-    column-gutter: 2.5cm,
-    row-gutter: 1.6cm,
-    {problem_calls}
-  )
-]
-
-#place(bottom + center)[
-  #rotate(180deg)[
-    #text(size: 12pt)[{answer_text}]
-  ]
-]"""
-
-
-def build_typ_source(problems: list[tuple[int, int]]) -> str:
-    """Build a Typst source string for one or more pages of addition problems.
+def build_typ_source(module: Module, problems: list[Any]) -> str:
+    """Build a Typst source string for one or more pages of problems.
 
     Problems are split into pages of 9. Numbers run continuously across pages.
     """
     pages = [
-        _page_source(problems[i : i + 9], start_num=i + 1)
+        module.page_source(problems[i : i + 9], start_num=i + 1)
         for i in range(0, len(problems), 9)
     ]
-    return _PREAMBLE + "\n" + "\n\n#pagebreak()\n\n".join(pages) + "\n"
+    return module.typst_preamble() + "\n" + "\n\n#pagebreak()\n\n".join(pages) + "\n"
 
 
-def render_pdf(problems: list[tuple[int, int]]) -> bytes:
-    """Compile the addition problems sheet to PDF and return the bytes."""
-    source = build_typ_source(problems)
+def render_pdf(module: Module, problems: list[Any]) -> bytes:
+    """Compile the problems sheet to PDF and return the bytes."""
+    source = build_typ_source(module, problems)
     with tempfile.NamedTemporaryFile(
         suffix=".typ", mode="w", encoding="utf-8", delete=False
     ) as f:
