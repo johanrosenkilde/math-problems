@@ -4,22 +4,11 @@ import tempfile
 import typst
 
 
-def build_typ_source(problems: list[tuple[int, int]]) -> str:
-    """Build a Typst source string for a page of 9 addition problems."""
-    problem_calls = ",\n    ".join(
-        f"problem({i}, {a}, {b})"
-        for i, (a, b) in enumerate(problems, start=1)
-    )
-    answer_text = "#h(1cm)".join(
-        f"{i}. {a + b}"
-        for i, (a, b) in enumerate(problems, start=1)
-    )
-
-    return f"""\
+_PREAMBLE = """\
 #set page(paper: "a4", margin: (x: 2cm, y: 2.5cm))
 #set text(font: "New Computer Modern")
 
-#let problem(num, a, b) = {{
+#let problem(num, a, b) = {
   grid(
     columns: (auto, 2cm),
     column-gutter: 8pt,
@@ -44,8 +33,21 @@ def build_typ_source(problems: list[tuple[int, int]]) -> str:
       #v(1cm)
     ]
   )
-}}
+}
+"""
 
+
+def _page_source(problems: list[tuple[int, int]], start_num: int) -> str:
+    """Build Typst content for a single page, with problem numbers starting at start_num."""
+    problem_calls = ",\n    ".join(
+        f"problem({start_num + i}, {a}, {b})"
+        for i, (a, b) in enumerate(problems)
+    )
+    answer_text = "#h(1cm)".join(
+        f"{start_num + i}. {a + b}"
+        for i, (a, b) in enumerate(problems)
+    )
+    return f"""\
 #align(center)[
   #text(size: 24pt, weight: "bold")[Addition]
 ]
@@ -67,8 +69,19 @@ def build_typ_source(problems: list[tuple[int, int]]) -> str:
   #rotate(180deg)[
     #text(size: 12pt)[{answer_text}]
   ]
-]
-"""
+]"""
+
+
+def build_typ_source(problems: list[tuple[int, int]]) -> str:
+    """Build a Typst source string for one or more pages of addition problems.
+
+    Problems are split into pages of 9. Numbers run continuously across pages.
+    """
+    pages = [
+        _page_source(problems[i : i + 9], start_num=i + 1)
+        for i in range(0, len(problems), 9)
+    ]
+    return _PREAMBLE + "\n" + "\n\n#pagebreak()\n\n".join(pages) + "\n"
 
 
 def render_pdf(problems: list[tuple[int, int]]) -> bytes:
