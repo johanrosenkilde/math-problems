@@ -23,26 +23,29 @@ def build_typ_source(problems: list[tuple[int, int]]) -> str:
   align(center)[
     #text(size: 18pt, weight: "bold")[#num.]
     #v(4pt)
-    #box(width: 5.5em)[
+    #box(width: 1.8cm)[
       #grid(
-        columns: (1.5em, 4em),
+        columns: (0.6cm, 1.2cm),
+        row-gutter: 8pt,
         align: (left, right),
-        [], [#text(size: 48pt)[#a]],
-        [#text(size: 48pt)[+]], [#text(size: 48pt)[#b]],
+        [], [#text(size: 40pt)[#a]],
+        [#text(size: 40pt)[+]], [#text(size: 40pt)[#b]],
       )
       #v(2pt)
-      #line(length: 5.5em, stroke: 1.5pt)
-      #v(2.5em)
+      #line(length: 100%, stroke: 1.5pt)
+      #v(2cm)
     ]
   ]
 }}
 
-#grid(
-  columns: 3,
-  column-gutter: 1cm,
-  row-gutter: 0.5cm,
-  {problem_calls}
-)
+#align(center)[
+  #grid(
+    columns: (auto, auto, auto),
+    column-gutter: 1.5cm,
+    row-gutter: 1.2cm,
+    {problem_calls}
+  )
+]
 
 #v(1fr)
 
