@@ -13,32 +13,34 @@ FIXED_PROBLEMS = [
     AdditionProblem(6, 9),
 ]
 
+PAGES = [(AdditionModule(), FIXED_PROBLEMS)]
+
 
 def test_typ_source_contains_addends():
-    source = build_typ_source(AdditionModule(), FIXED_PROBLEMS)
+    source = build_typ_source(PAGES)
     for p in FIXED_PROBLEMS:
         assert str(p.a) in source
         assert str(p.b) in source
 
 
 def test_typ_source_contains_answers():
-    source = build_typ_source(AdditionModule(), FIXED_PROBLEMS)
+    source = build_typ_source(PAGES)
     for i, p in enumerate(FIXED_PROBLEMS, start=1):
         assert f"{i}. {p.result}" in source
 
 
 def test_typ_source_has_upside_down_block():
-    source = build_typ_source(AdditionModule(), FIXED_PROBLEMS)
+    source = build_typ_source(PAGES)
     assert "rotate(180deg)" in source
 
 
 def test_typ_source_has_problem_numbering():
-    source = build_typ_source(AdditionModule(), FIXED_PROBLEMS)
+    source = build_typ_source(PAGES)
     for i in range(1, 10):
         assert f"problem({i}," in source
 
 
 def test_render_pdf_returns_valid_pdf():
-    pdf_bytes = render_pdf(AdditionModule(), FIXED_PROBLEMS)
+    pdf_bytes = render_pdf(PAGES)
     assert isinstance(pdf_bytes, bytes)
     assert pdf_bytes[:4] == b"%PDF"

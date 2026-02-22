@@ -11,9 +11,6 @@ _DIFFICULTY_RANGES: dict[int, tuple[int, int]] = {
 }
 
 _PREAMBLE = """\
-#set page(paper: "a4", margin: (x: 2cm, y: 2.5cm))
-#set text(font: "New Computer Modern")
-
 #let problem(num, a, b) = context {
   let inner = grid(
     columns: (auto, auto),

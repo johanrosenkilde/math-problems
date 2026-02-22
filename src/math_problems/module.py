@@ -2,6 +2,12 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 
+_BASE_PREAMBLE = """\
+#set page(paper: "a4", margin: (x: 2cm, y: 2.5cm))
+#set text(font: "New Computer Modern")
+"""
+
+
 class Module(ABC):
     @property
     @abstractmethod

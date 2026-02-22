@@ -1,9 +1,13 @@
+import random
 from pathlib import Path
 
 import typer
 
 from math_problems.addition import AdditionModule
 from math_problems.renderer import render_pdf
+from math_problems.subtraction import SubtractionModule
+
+MODULES = [AdditionModule(), SubtractionModule()]
 
 app = typer.Typer()
 
@@ -18,12 +22,15 @@ def main(
         1, "--difficulty", "-d", help="Difficulty level (1–3)."
     ),
 ) -> None:
-    """Generate a PDF with 9 addition problems per page."""
-    module = AdditionModule()
-    try:
-        problems = module.generate(n=9 * pages, difficulty=difficulty)
-    except ValueError as e:
-        raise typer.BadParameter(str(e))
-    pdf_bytes = render_pdf(module, problems)
+    """Generate a PDF with 9 problems per page, randomly mixing problem types."""
+    page_data = []
+    for _ in range(pages):
+        module = random.choice(MODULES)
+        try:
+            problems = module.generate(n=9, difficulty=difficulty)
+        except ValueError as e:
+            raise typer.BadParameter(str(e))
+        page_data.append((module, problems))
+    pdf_bytes = render_pdf(page_data)
     output.write_bytes(pdf_bytes)
     typer.echo(f"Saved {output} ({pages} page{'s' if pages != 1 else ''})")

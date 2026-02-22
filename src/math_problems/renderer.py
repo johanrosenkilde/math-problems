@@ -4,24 +4,30 @@ from typing import Any
 
 import typst
 
-from math_problems.module import Module
+from math_problems.module import Module, _BASE_PREAMBLE
 
 
-def build_typ_source(module: Module, problems: list[Any]) -> str:
-    """Build a Typst source string for one or more pages of problems.
+def build_typ_source(pages: list[tuple[Module, list[Any]]]) -> str:
+    """Build a Typst source string for a sequence of pages.
 
-    Problems are split into pages of 9. Numbers run continuously across pages.
+    Each entry in pages is a (module, problems) pair. The module's
+    typst_preamble() (its #let bindings) is re-emitted before each page so
+    different modules can appear on different pages. Problem numbers run
+    continuously across pages.
     """
-    pages = [
-        module.page_source(problems[i : i + 9], start_num=i + 1)
-        for i in range(0, len(problems), 9)
-    ]
-    return module.typst_preamble() + "\n" + "\n\n#pagebreak()\n\n".join(pages) + "\n"
+    page_sources = []
+    start_num = 1
+    for module, problems in pages:
+        page_sources.append(
+            module.typst_preamble() + "\n" + module.page_source(problems, start_num)
+        )
+        start_num += len(problems)
+    return _BASE_PREAMBLE + "\n" + "\n\n#pagebreak()\n\n".join(page_sources) + "\n"
 
 
-def render_pdf(module: Module, problems: list[Any]) -> bytes:
+def render_pdf(pages: list[tuple[Module, list[Any]]]) -> bytes:
     """Compile the problems sheet to PDF and return the bytes."""
-    source = build_typ_source(module, problems)
+    source = build_typ_source(pages)
     with tempfile.NamedTemporaryFile(
         suffix=".typ", mode="w", encoding="utf-8", delete=False
     ) as f:
