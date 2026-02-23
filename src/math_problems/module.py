@@ -11,6 +11,11 @@ _BASE_PREAMBLE = """\
 class Module(ABC):
     @property
     @abstractmethod
+    def slug(self) -> str:
+        """Short identifier used in CLI (e.g. 'addition')."""
+
+    @property
+    @abstractmethod
     def title(self) -> str:
         """Display name used as the page headline."""
 

@@ -54,6 +54,10 @@ class AdditionProblem:
 
 class AdditionModule(Module):
     @property
+    def slug(self) -> str:
+        return "addition"
+
+    @property
     def title(self) -> str:
         return "Addition"
 

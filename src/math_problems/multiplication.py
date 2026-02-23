@@ -54,6 +54,10 @@ class MultiplicationProblem:
 
 class MultiplicationModule(Module):
     @property
+    def slug(self) -> str:
+        return "multiplication"
+
+    @property
     def title(self) -> str:
         return "Multiplication"
 

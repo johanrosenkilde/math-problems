@@ -10,6 +10,7 @@ from math_problems.renderer import render_pdf
 from math_problems.subtraction import SubtractionModule
 
 MODULES = [AdditionModule(), SubtractionModule(), MultiplicationModule(), DivisionModule()]
+MODULE_MAP = {m.slug: m for m in MODULES}
 
 app = typer.Typer()
 
@@ -23,16 +24,27 @@ def main(
     difficulty: int = typer.Option(
         1, "--difficulty", "-d", help="Difficulty level (1–3)."
     ),
+    module: str = typer.Option(
+        None, "--module", "-m", help=f"Comma-separated problem types to use: {', '.join(MODULE_MAP)}. Defaults to all."
+    ),
 ) -> None:
     """Generate a PDF with 9 problems per page, randomly mixing problem types."""
+    if module is not None:
+        names = [m.strip().lower() for m in module.split(",")]
+        invalid = [n for n in names if n not in MODULE_MAP]
+        if invalid:
+            raise typer.BadParameter(f"Unknown module(s): {', '.join(invalid)}. Choose from: {', '.join(MODULE_MAP)}")
+        pool = [MODULE_MAP[n] for n in names]
+    else:
+        pool = MODULES
     page_data = []
     for _ in range(pages):
-        module = random.choice(MODULES)
+        selected = random.choice(pool)
         try:
-            problems = module.generate(n=9, difficulty=difficulty)
+            problems = selected.generate(n=9, difficulty=difficulty)
         except ValueError as e:
             raise typer.BadParameter(str(e))
-        page_data.append((module, problems))
+        page_data.append((selected, problems))
     pdf_bytes = render_pdf(page_data)
     output.write_bytes(pdf_bytes)
     typer.echo(f"Saved {output} ({pages} page{'s' if pages != 1 else ''})")

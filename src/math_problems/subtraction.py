@@ -54,6 +54,10 @@ class SubtractionProblem:
 
 class SubtractionModule(Module):
     @property
+    def slug(self) -> str:
+        return "subtraction"
+
+    @property
     def title(self) -> str:
         return "Subtraction"
 

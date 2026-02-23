@@ -54,6 +54,10 @@ class DivisionProblem:
 
 class DivisionModule(Module):
     @property
+    def slug(self) -> str:
+        return "division"
+
+    @property
     def title(self) -> str:
         return "Division"
 
