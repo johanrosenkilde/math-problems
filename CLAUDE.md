@@ -10,12 +10,14 @@ src/math_problems/
   addition.py        — AdditionProblem dataclass + AdditionModule
   subtraction.py     — SubtractionProblem dataclass + SubtractionModule
   multiplication.py  — MultiplicationProblem dataclass + MultiplicationModule (asymmetric difficulty ranges)
+  division.py        — DivisionProblem dataclass + DivisionModule (same ranges as multiplication; divisor ≥ 2, result always integer)
   renderer.py        — build_typ_source(pages), render_pdf(pages)
   cli.py         — typer entry point, writes math_problems.pdf
 tests/
   test_addition.py       — unit tests for AdditionProblem and AdditionModule
   test_subtraction.py    — unit tests for SubtractionProblem and SubtractionModule
   test_multiplication.py — unit tests for MultiplicationProblem and MultiplicationModule
+  test_division.py       — unit tests for DivisionProblem and DivisionModule
   test_renderer.py       — tests for Typst source content and PDF output validity
 ```
 

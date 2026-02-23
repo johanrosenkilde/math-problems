@@ -4,11 +4,12 @@ from pathlib import Path
 import typer
 
 from math_problems.addition import AdditionModule
+from math_problems.division import DivisionModule
 from math_problems.multiplication import MultiplicationModule
 from math_problems.renderer import render_pdf
 from math_problems.subtraction import SubtractionModule
 
-MODULES = [AdditionModule(), SubtractionModule(), MultiplicationModule()]
+MODULES = [AdditionModule(), SubtractionModule(), MultiplicationModule(), DivisionModule()]
 
 app = typer.Typer()
 
