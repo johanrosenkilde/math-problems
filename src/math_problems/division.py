@@ -53,13 +53,14 @@ class DivisionProblem:
 
 
 class DivisionModule(Module):
+    _TITLES = {"en": "Division", "da": "Division"}
+
     @property
     def slug(self) -> str:
         return "division"
 
-    @property
-    def title(self) -> str:
-        return "Division"
+    def title(self, locale: str) -> str:
+        return self._TITLES[locale]
 
     def generate(self, n: int, difficulty: int) -> list[DivisionProblem]:
         if difficulty not in _DIFFICULTY_RANGES:
@@ -73,7 +74,7 @@ class DivisionModule(Module):
     def typst_preamble(self) -> str:
         return _PREAMBLE
 
-    def page_source(self, problems: list[DivisionProblem], start_num: int) -> str:
+    def page_source(self, problems: list[DivisionProblem], start_num: int, locale: str) -> str:
         problem_calls = ",\n    ".join(
             f"problem({start_num + i}, {p.dividend}, {p.divisor})"
             for i, p in enumerate(problems)
@@ -84,7 +85,7 @@ class DivisionModule(Module):
         )
         return f"""\
 #align(center)[
-  #text(size: 24pt, weight: "bold")[{self.title}]
+  #text(size: 24pt, weight: "bold")[{self.title(locale)}]
 ]
 
 #v(0.8cm)

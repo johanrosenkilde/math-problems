@@ -11,6 +11,13 @@ src/math_problems/
   subtraction.py     — SubtractionProblem dataclass + SubtractionModule
   multiplication.py  — MultiplicationProblem dataclass + MultiplicationModule (asymmetric difficulty ranges)
   division.py        — DivisionProblem dataclass + DivisionModule (same ranges as multiplication; divisor ≥ 2, result always integer)
+```
+
+## Locale support
+
+Each module has a `_TITLES` dict and implements `title(locale: str) -> str`. The `locale` parameter flows through `page_source → build_typ_source → render_pdf → cli`. Supported locales: `en`, `da`.
+
+```
   renderer.py        — build_typ_source(pages), render_pdf(pages)
   cli.py         — typer entry point, writes math_problems.pdf
 tests/
@@ -38,3 +45,4 @@ tests/
 - Never suggest or initiate a git commit. Only commit when explicitly asked. Add and commit in the same suggested command.
 - Always update CLAUDE.md whenever relevant changes happen, or when you learn new things about what you should and should not do.
 - Never implement features or changes that weren't explicitly requested. If a request isn't possible with the current code, say so and suggest options — do not implement them unilaterally.
+- When rendering an example, always use 10 pages (`-p 10`).

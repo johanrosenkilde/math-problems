@@ -7,7 +7,7 @@ import typst
 from math_problems.module import Module, _BASE_PREAMBLE
 
 
-def build_typ_source(pages: list[tuple[Module, list[Any]]]) -> str:
+def build_typ_source(pages: list[tuple[Module, list[Any]]], locale: str = "en") -> str:
     """Build a Typst source string for a sequence of pages.
 
     Each entry in pages is a (module, problems) pair. The module's
@@ -19,15 +19,15 @@ def build_typ_source(pages: list[tuple[Module, list[Any]]]) -> str:
     start_num = 1
     for module, problems in pages:
         page_sources.append(
-            module.typst_preamble() + "\n" + module.page_source(problems, start_num)
+            module.typst_preamble() + "\n" + module.page_source(problems, start_num, locale)
         )
         start_num += len(problems)
     return _BASE_PREAMBLE + "\n" + "\n\n#pagebreak()\n\n".join(page_sources) + "\n"
 
 
-def render_pdf(pages: list[tuple[Module, list[Any]]]) -> bytes:
+def render_pdf(pages: list[tuple[Module, list[Any]]], locale: str = "en") -> bytes:
     """Compile the problems sheet to PDF and return the bytes."""
-    source = build_typ_source(pages)
+    source = build_typ_source(pages, locale)
     with tempfile.NamedTemporaryFile(
         suffix=".typ", mode="w", encoding="utf-8", delete=False
     ) as f:

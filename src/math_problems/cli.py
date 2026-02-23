@@ -27,6 +27,9 @@ def main(
     module: str = typer.Option(
         None, "--module", "-m", help=f"Comma-separated problem types to use: {', '.join(MODULE_MAP)}. Defaults to all."
     ),
+    locale: str = typer.Option(
+        "da", "--locale", "-l", help="Language for PDF titles: en, da."
+    ),
 ) -> None:
     """Generate a PDF with 9 problems per page, randomly mixing problem types."""
     if module is not None:
@@ -45,6 +48,6 @@ def main(
         except ValueError as e:
             raise typer.BadParameter(str(e))
         page_data.append((selected, problems))
-    pdf_bytes = render_pdf(page_data)
+    pdf_bytes = render_pdf(page_data, locale)
     output.write_bytes(pdf_bytes)
     typer.echo(f"Saved {output} ({pages} page{'s' if pages != 1 else ''})")

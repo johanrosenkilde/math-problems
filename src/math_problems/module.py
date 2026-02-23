@@ -14,10 +14,9 @@ class Module(ABC):
     def slug(self) -> str:
         """Short identifier used in CLI (e.g. 'addition')."""
 
-    @property
     @abstractmethod
-    def title(self) -> str:
-        """Display name used as the page headline."""
+    def title(self, locale: str) -> str:
+        """Display name used as the page headline, in the given locale."""
 
     @abstractmethod
     def generate(self, n: int, difficulty: int) -> list[Any]:
@@ -28,5 +27,5 @@ class Module(ABC):
         """Typst source: page/text setup + let-bindings for this module."""
 
     @abstractmethod
-    def page_source(self, problems: list[Any], start_num: int) -> str:
+    def page_source(self, problems: list[Any], start_num: int, locale: str) -> str:
         """Typst markup for a single page of up to 9 problems."""
