@@ -37,3 +37,4 @@ tests/
 
 - Never suggest or initiate a git commit. Only commit when explicitly asked. Add and commit in the same suggested command.
 - Always update CLAUDE.md whenever relevant changes happen, or when you learn new things about what you should and should not do.
+- Never implement features or changes that weren't explicitly requested. If a request isn't possible with the current code, say so and suggest options — do not implement them unilaterally.
