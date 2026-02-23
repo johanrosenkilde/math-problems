@@ -4,10 +4,10 @@ from dataclasses import dataclass
 from math_problems.module import Module
 
 
-_DIFFICULTY_SETTINGS: dict[int, tuple[int, int]] = {
-    1: (5, 2),
-    2: (6, 3),
-    3: (8, 5),
+_DIFFICULTY_SETTINGS: dict[int, tuple[int, int, int]] = {
+    1: (5,  6, 12),
+    2: (6, 10, 18),
+    3: (10, 30, 60),
 }
 
 _PREAMBLE = """\
@@ -34,26 +34,25 @@ _PREAMBLE = """\
 """
 
 
-def _generate_shape(n: int, r: int) -> frozenset[tuple[int, int]]:
-    max_dim = n // 2 + 1
+def _neighbors(cell: tuple[int, int], n: int) -> set[tuple[int, int]]:
+    row, col = cell
+    return {
+        (row + dr, col + dc)
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        if 0 <= row + dr < n and 0 <= col + dc < n
+    }
 
-    def random_rect_at(anchor_row: int, anchor_col: int) -> set[tuple[int, int]]:
-        h = random.randint(2, max_dim)
-        w = random.randint(2, max_dim)
-        row_start = random.randint(max(0, anchor_row - h + 1), min(n - h, anchor_row))
-        col_start = random.randint(max(0, anchor_col - w + 1), min(n - w, anchor_col))
-        return {(row_start + dr, col_start + dc) for dr in range(h) for dc in range(w)}
 
-    h = random.randint(2, max_dim)
-    w = random.randint(2, max_dim)
-    row = random.randint(0, n - h)
-    col = random.randint(0, n - w)
-    filled: set[tuple[int, int]] = {(row + dr, col + dc) for dr in range(h) for dc in range(w)}
-
-    for _ in range(r - 1):
-        anchor_row, anchor_col = random.choice(list(filled))
-        filled |= random_rect_at(anchor_row, anchor_col)
-
+def _generate_shape(n: int, min_cells: int, max_cells: int) -> frozenset[tuple[int, int]]:
+    target = random.randint(min_cells, max_cells)
+    seed = (random.randint(0, n - 1), random.randint(0, n - 1))
+    filled: set[tuple[int, int]] = {seed}
+    boundary = _neighbors(seed, n)
+    while len(filled) < target and boundary:
+        cell = random.choice(list(boundary))
+        filled.add(cell)
+        boundary.discard(cell)
+        boundary |= _neighbors(cell, n) - filled
     return frozenset(filled)
 
 
@@ -80,9 +79,9 @@ class CountingSquaresModule(Module):
     def generate(self, n: int, difficulty: int) -> list[CountingSquaresProblem]:
         if difficulty not in _DIFFICULTY_SETTINGS:
             raise ValueError(f"Difficulty must be 1, 2, or 3, got {difficulty}.")
-        grid_n, r = _DIFFICULTY_SETTINGS[difficulty]
+        grid_n, min_cells, max_cells = _DIFFICULTY_SETTINGS[difficulty]
         return [
-            CountingSquaresProblem(n=grid_n, filled=_generate_shape(grid_n, r))
+            CountingSquaresProblem(n=grid_n, filled=_generate_shape(grid_n, min_cells, max_cells))
             for _ in range(n)
         ]
 

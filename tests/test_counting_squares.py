@@ -33,27 +33,27 @@ def test_result_is_len_filled():
 
 
 def test_shape_is_contiguous():
-    for n, r in _DIFFICULTY_SETTINGS.values():
+    for n, min_cells, max_cells in _DIFFICULTY_SETTINGS.values():
         for _ in range(10):
-            filled = _generate_shape(n, r)
+            filled = _generate_shape(n, min_cells, max_cells)
             assert _is_contiguous(filled)
 
 
 def test_difficulty_settings():
-    assert _DIFFICULTY_SETTINGS[1] == (5, 2)
-    assert _DIFFICULTY_SETTINGS[2] == (6, 3)
-    assert _DIFFICULTY_SETTINGS[3] == (8, 5)
+    assert _DIFFICULTY_SETTINGS[1] == (5,  6, 12)
+    assert _DIFFICULTY_SETTINGS[2] == (6, 10, 18)
+    assert _DIFFICULTY_SETTINGS[3] == (10, 20, 40)
 
 
 def test_difficulty_grid_size():
-    for difficulty, (expected_n, _) in _DIFFICULTY_SETTINGS.items():
+    for difficulty, (expected_n, *_) in _DIFFICULTY_SETTINGS.items():
         problems = CountingSquaresModule().generate(n=5, difficulty=difficulty)
         for p in problems:
             assert p.n == expected_n
 
 
 def test_difficulty_filled_cells_in_bounds():
-    for difficulty, (expected_n, _) in _DIFFICULTY_SETTINGS.items():
+    for difficulty, (expected_n, *_) in _DIFFICULTY_SETTINGS.items():
         problems = CountingSquaresModule().generate(n=10, difficulty=difficulty)
         for p in problems:
             for row, col in p.filled:
@@ -78,8 +78,7 @@ def test_invalid_difficulty():
         CountingSquaresModule().generate(n=9, difficulty=4)
 
 
-def test_filled_cells_minimum_size():
-    # Every shape must contain at least one 2×2 rectangle → at least 4 cells
-    for difficulty in _DIFFICULTY_SETTINGS:
+def test_filled_cells_count_in_range():
+    for difficulty, (_, min_cells, max_cells) in _DIFFICULTY_SETTINGS.items():
         for p in CountingSquaresModule().generate(n=10, difficulty=difficulty):
-            assert p.result >= 4
+            assert min_cells <= p.result <= max_cells
