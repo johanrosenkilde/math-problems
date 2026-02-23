@@ -34,3 +34,4 @@ tests/
 ## Workflow
 
 - Never suggest or initiate a git commit. Only commit when explicitly asked. Add and commit in the same suggested command.
+- Always update CLAUDE.md whenever relevant changes happen, or when you learn new things about what you should and should not do.
