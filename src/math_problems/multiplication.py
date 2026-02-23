@@ -5,8 +5,8 @@ from math_problems.module import Module
 
 
 _DIFFICULTY_RANGES: dict[int, tuple[tuple[int, int], tuple[int, int]]] = {
-    1: ((1, 9),   (1, 9)),
-    2: ((1, 9),   (11, 20)),
+    1: ((2, 9),   (2, 9)),
+    2: ((2, 9),   (11, 20)),
     3: ((11, 25), (11, 25)),
 }
 
