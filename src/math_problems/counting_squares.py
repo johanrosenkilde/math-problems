@@ -12,17 +12,22 @@ _DIFFICULTY_SETTINGS: dict[int, tuple[int, int]] = {
 
 _PREAMBLE = """\
 #let problem(num, n, cells) = {
-  let cell_size = if n <= 5 { 0.8cm } else if n == 6 { 0.7cm } else { 0.6cm }
+  let cell_size = if n <= 5 { 0.7cm } else if n == 6 { 0.6cm } else { 0.45cm }
+  let draw_cell(c) = if c == 1 {
+    box(width: cell_size, height: cell_size, fill: black)
+  } else {
+    box(width: cell_size, height: cell_size, stroke: 0.5pt)
+  }
   grid(
     columns: (auto, auto),
     column-gutter: 8pt,
     align: (right + top, left + top),
     text(size: 14pt, weight: "bold")[#num.],
-    table(
+    grid(
       columns: range(n).map(_ => cell_size),
       rows: range(n).map(_ => cell_size),
-      stroke: 0.5pt,
-      ..cells.map(c => if c == 1 { table.cell(fill: black)[] } else { [] }),
+      gutter: 3pt,
+      ..cells.map(c => draw_cell(c)),
     ),
   )
 }
@@ -112,7 +117,7 @@ class CountingSquaresModule(Module):
   #grid(
     columns: (auto, auto, auto),
     column-gutter: 1cm,
-    row-gutter: 1cm,
+    row-gutter: 2cm,
     {problem_calls}
   )
 ]
