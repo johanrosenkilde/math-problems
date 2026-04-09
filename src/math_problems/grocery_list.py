@@ -51,7 +51,8 @@ class GroceryListModule(Module):
             raise ValueError(f"Difficulty must be 1, 2, or 3, got {difficulty}.")
         page_sym_count, per_problem_range, val_range, count_range = _DIFFICULTY_SETTINGS[difficulty]
         chosen = random.sample(_SYMBOLS, page_sym_count)
-        legend = {emoji: random.randint(*val_range) for emoji in chosen}
+        values = random.sample(range(val_range[0], val_range[1] + 1), page_sym_count)
+        legend = dict(zip(chosen, values))
         problems = []
         for _ in range(n):
             k = random.randint(*per_problem_range)
