@@ -17,12 +17,13 @@ _INGREDIENTS = [
 _DIFFICULTY_SETTINGS: dict[int, tuple[int, tuple[int, int], tuple[int, int], tuple[int, int]]] = {
     #  (page_ingredients, per_problem_range, value_range, count_range)
     1: (3, (2, 2), (1, 5), (1, 3)),
-    2: (4, (2, 3), (2, 9), (2, 5)),
-    3: (5, (3, 3), (3, 12), (2, 4)),
+    2: (4, (2, 3), (3, 9), (2, 5)),
+    3: (5, (3, 3), (8, 12), (4, 9)),
 }
 
 _PREAMBLE = """\
 #set text(font: ("New Computer Modern", "Apple Color Emoji"))
+#set page(margin: (top: 2.5cm, left: 2.5cm, right: 2.5cm, bottom: 1.2cm))
 """
 
 
@@ -75,15 +76,14 @@ class GroceryListModule(Module):
             self._problem_call(start_num + i, p)
             for i, p in enumerate(problems)
         )
-        answer_text = "#h(1cm)".join(
+        answer_text = "#h(0.5cm)".join(
             f"{start_num + i}. {p.result}"
             for i, p in enumerate(problems)
         )
-        # A4 content area: 297mm − 2×25mm margins = 247mm.
-        # Reserve header (~50mm, includes title + legend + paragraph spacing)
-        # and answer line (~10mm); the rest is split into 3 equal rows
-        # with 0.4cm gutters between them.
-        row_h_mm = (247 - 50 - 10 - 2 * 4) // 3  # = 59mm
+        # A4 content area: 297mm − 25mm top − 12mm bottom = 260mm.
+        # Reserve header (~50mm) and answer line (~8mm); the rest is
+        # split into 3 equal rows with 0.2cm gutters between them.
+        row_h_mm = (260 - 50 - 8) // 3  # = 67mm
 
         return f"""\
 #align(center)[
@@ -102,7 +102,7 @@ class GroceryListModule(Module):
     columns: (1fr, 1fr, 1fr),
     rows: ({row_h_mm}mm, {row_h_mm}mm, {row_h_mm}mm),
     column-gutter: 0.8cm,
-    row-gutter: 0.4cm,
+    row-gutter: 0cm,
     align: (left + top),
     {problem_calls}
   )
@@ -128,8 +128,8 @@ class GroceryListModule(Module):
                 visual_rows += 1
                 max_per_row = max(max_per_row, count)
             else:
-                visual_rows += (count + 2) // 3
-                max_per_row = max(max_per_row, 3)
+                visual_rows += (count + 4) // 5
+                max_per_row = max(max_per_row, 5)
 
         # Raw font size from width and height constraints
         raw_fs = min(avail_w / max(max_per_row, 1),
@@ -143,34 +143,50 @@ class GroceryListModule(Module):
         else:
             fs = 18
 
-        # Target total icon-stack height (3 buckets → answer lines align)
-        if visual_rows >= 3 or fs == 30:
+        # Target total icon-stack height (buckets → answer lines align)
+        if fs == 30:
+            icon_target = 145
+        elif visual_rows >= 4:
+            icon_target = 175
+        elif visual_rows == 3:
             icon_target = 130
         elif fs == 21:
-            icon_target = 90
+            icon_target = 100
         else:
-            icon_target = 75
+            icon_target = 80
 
-        if visual_rows > 1:
+        n_ingredients = len(p.items)
+        min_gap = 4  # minimum pt between different ingredients
+
+        # Reduce font if icons would overflow target (keeps spacing ≥ min_gap)
+        max_used = icon_target - max(n_ingredients - 1, 0) * min_gap
+        while visual_rows * fs * line_h > max_used and fs > 10:
+            fs -= 1
+
+        # Inter-ingredient spacing fills the target; intra-ingredient
+        # (wrap) rows use minimal spacing.
+        if n_ingredients > 1:
             used = visual_rows * fs * line_h
-            spacing = (icon_target - used) / (visual_rows - 1)
-            spacing = max(spacing, -fs * 0.3)  # limit overlap
+            spacing = (icon_target - used) / (n_ingredients - 1)
         else:
             spacing = 0
 
-        # Build emoji rows
-        rows = []
+        # Build per-ingredient blocks (nested stack for wrapped rows)
+        blocks = []
         for emoji, count in p.items:
             if count <= 5:
                 row_content = " ".join([emoji] * count)
-                rows.append(f"text(size: {fs}pt)[{row_content}]")
+                blocks.append(f"text(size: {fs}pt)[{row_content}]")
             else:
-                for i in range(0, count, 3):
-                    chunk = min(3, count - i)
+                inner_rows = []
+                for i in range(0, count, 5):
+                    chunk = min(5, count - i)
                     row_content = " ".join([emoji] * chunk)
-                    rows.append(f"text(size: {fs}pt)[{row_content}]")
+                    inner_rows.append(f"text(size: {fs}pt)[{row_content}]")
+                inner = ",\n        ".join(inner_rows)
+                blocks.append(f"stack(dir: ttb, spacing: 0pt, {inner})")
 
-        stack_items = ",\n      ".join(rows)
+        stack_items = ",\n      ".join(blocks)
         return f"""context {{
   let inner = stack(
     dir: ttb,
@@ -184,15 +200,13 @@ class GroceryListModule(Module):
     align: (right + top, left + top),
     text(size: 14pt, weight: "bold")[{num}.],
     {{
-      v(6pt)
       inner
       v(2pt)
       line(length: w, stroke: 1.5pt)
-      v(20pt)
+      v(14pt)
       line(length: w, stroke: 1.5pt)
       v(-8pt)
       line(length: w, stroke: 1.5pt)
-      v(0.5cm)
     }}
   )
 }}"""
