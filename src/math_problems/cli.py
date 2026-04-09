@@ -23,8 +23,8 @@ def main(
         Path("math_problems.pdf"), "--output", "-o", help="Output PDF path."
     ),
     pages: int = typer.Option(1, "--pages", "-p", help="Number of pages to generate."),
-    difficulty: int = typer.Option(
-        1, "--difficulty", "-d", help="Difficulty level (1–3)."
+    difficulty: float = typer.Option(
+        1, "--difficulty", "-d", help="Difficulty level (1–3, half-steps like 1.5 supported by some modules)."
     ),
     module: str = typer.Option(
         None, "--module", "-m", help=f"Comma-separated problem types to use: {', '.join(MODULE_MAP)}. Defaults to all."

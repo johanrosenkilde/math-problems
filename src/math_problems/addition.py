@@ -62,14 +62,17 @@ class AdditionModule(Module):
     def title(self, locale: str) -> str:
         return self._TITLES[locale]
 
-    def generate(self, n: int, difficulty: int) -> list[AdditionProblem]:
+    def _make(self, low: int, high: int) -> AdditionProblem:
+        return AdditionProblem(random.randint(low, high), random.randint(low, high))
+
+    def generate(self, n: int, difficulty: float) -> list[AdditionProblem]:
+        if difficulty in (1.5, 2.5):
+            lo, hi = _DIFFICULTY_RANGES[int(difficulty - 0.5)], _DIFFICULTY_RANGES[int(difficulty + 0.5)]
+            n_easy = min(6, n)
+            return [self._make(*lo) for _ in range(n_easy)] + [self._make(*hi) for _ in range(n - n_easy)]
         if difficulty not in _DIFFICULTY_RANGES:
-            raise ValueError(f"Difficulty must be 1, 2, or 3, got {difficulty}.")
-        low, high = _DIFFICULTY_RANGES[difficulty]
-        return [
-            AdditionProblem(random.randint(low, high), random.randint(low, high))
-            for _ in range(n)
-        ]
+            raise ValueError(f"Difficulty must be 1, 1.5, 2, 2.5, or 3, got {difficulty}.")
+        return [self._make(*_DIFFICULTY_RANGES[difficulty]) for _ in range(n)]
 
     def typst_preamble(self) -> str:
         return _PREAMBLE

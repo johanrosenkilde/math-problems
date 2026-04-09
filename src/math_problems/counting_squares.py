@@ -76,14 +76,17 @@ class CountingSquaresModule(Module):
     def title(self, locale: str) -> str:
         return self._TITLES[locale]
 
-    def generate(self, n: int, difficulty: int) -> list[CountingSquaresProblem]:
+    def _make(self, grid_n: int, min_cells: int, max_cells: int) -> CountingSquaresProblem:
+        return CountingSquaresProblem(n=grid_n, filled=_generate_shape(grid_n, min_cells, max_cells))
+
+    def generate(self, n: int, difficulty: float) -> list[CountingSquaresProblem]:
+        if difficulty in (1.5, 2.5):
+            lo, hi = _DIFFICULTY_SETTINGS[int(difficulty - 0.5)], _DIFFICULTY_SETTINGS[int(difficulty + 0.5)]
+            n_easy = min(6, n)
+            return [self._make(*lo) for _ in range(n_easy)] + [self._make(*hi) for _ in range(n - n_easy)]
         if difficulty not in _DIFFICULTY_SETTINGS:
-            raise ValueError(f"Difficulty must be 1, 2, or 3, got {difficulty}.")
-        grid_n, min_cells, max_cells = _DIFFICULTY_SETTINGS[difficulty]
-        return [
-            CountingSquaresProblem(n=grid_n, filled=_generate_shape(grid_n, min_cells, max_cells))
-            for _ in range(n)
-        ]
+            raise ValueError(f"Difficulty must be 1, 1.5, 2, 2.5, or 3, got {difficulty}.")
+        return [self._make(*_DIFFICULTY_SETTINGS[difficulty]) for _ in range(n)]
 
     def typst_preamble(self) -> str:
         return _PREAMBLE

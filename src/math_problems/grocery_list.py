@@ -47,9 +47,11 @@ class GroceryListModule(Module):
     def title(self, locale: str) -> str:
         return self._TITLES[locale]
 
-    def generate(self, n: int, difficulty: int) -> list[GroceryListProblem]:
+    def generate(self, n: int, difficulty: float) -> list[GroceryListProblem]:
+        if difficulty in (1.5, 2.5):
+            return self._generate_mixed(n, difficulty)
         if difficulty not in _DIFFICULTY_SETTINGS:
-            raise ValueError(f"Difficulty must be 1, 2, or 3, got {difficulty}.")
+            raise ValueError(f"Difficulty must be 1, 1.5, 2, 2.5, or 3, got {difficulty}.")
         n_ingredients, per_problem_range, val_range, count_range = _DIFFICULTY_SETTINGS[difficulty]
         chosen = random.sample(_INGREDIENTS, n_ingredients)
         values = random.sample(range(val_range[0], val_range[1] + 1), n_ingredients)
@@ -59,6 +61,33 @@ class GroceryListModule(Module):
             k = random.randint(*per_problem_range)
             used = random.sample(chosen, k)
             items = [(emoji, random.randint(*count_range)) for emoji in used]
+            random.shuffle(items)
+            problems.append(GroceryListProblem(items=items, legend=legend))
+        return problems
+
+    def _generate_mixed(self, n: int, difficulty: float) -> list[GroceryListProblem]:
+        """First 2 rows (6 problems) at the lower difficulty, last row (3) at the higher."""
+        lo = int(difficulty - 0.5)
+        hi = int(difficulty + 0.5)
+        _, per_lo, _, count_lo = _DIFFICULTY_SETTINGS[lo]
+        n_ingredients, per_hi, val_range, count_hi = _DIFFICULTY_SETTINGS[hi]
+
+        chosen = random.sample(_INGREDIENTS, n_ingredients)
+        values = random.sample(range(val_range[0], val_range[1] + 1), n_ingredients)
+        legend = dict(zip(chosen, values))
+
+        problems = []
+        n_easy = min(6, n)
+        for _ in range(n_easy):
+            k = random.randint(*per_lo)
+            used = random.sample(chosen, k)
+            items = [(emoji, random.randint(*count_lo)) for emoji in used]
+            random.shuffle(items)
+            problems.append(GroceryListProblem(items=items, legend=legend))
+        for _ in range(n - n_easy):
+            k = random.randint(*per_hi)
+            used = random.sample(chosen, k)
+            items = [(emoji, random.randint(*count_hi)) for emoji in used]
             random.shuffle(items)
             problems.append(GroceryListProblem(items=items, legend=legend))
         return problems
