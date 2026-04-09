@@ -30,6 +30,7 @@ uv run math-problems [OPTIONS]
 - `multiplication` - Multiplication problems (asymmetric difficulty ranges)
 - `division` - Division problems (divisor >= 2, result always integer)
 - `counting-squares` - Count filled squares in an N x N grid
+- `grocery-list` - Multiply-and-add with grocery emoji placeholders
 
 ### Examples
 
