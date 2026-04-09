@@ -9,8 +9,9 @@ from math_problems.division import DivisionModule
 from math_problems.multiplication import MultiplicationModule
 from math_problems.renderer import render_pdf
 from math_problems.subtraction import SubtractionModule
+from math_problems.grocery_list import GroceryListModule
 
-MODULES = [AdditionModule(), SubtractionModule(), MultiplicationModule(), DivisionModule(), CountingSquaresModule()]
+MODULES = [AdditionModule(), SubtractionModule(), MultiplicationModule(), DivisionModule(), CountingSquaresModule(), GroceryListModule()]
 MODULE_MAP = {m.slug: m for m in MODULES}
 
 app = typer.Typer()

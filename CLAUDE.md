@@ -12,6 +12,7 @@ src/math_problems/
   multiplication.py  — MultiplicationProblem dataclass + MultiplicationModule (asymmetric difficulty ranges)
   division.py        — DivisionProblem dataclass + DivisionModule (same ranges as multiplication; divisor ≥ 2, result always integer)
   counting_squares.py — CountingSquaresProblem dataclass + CountingSquaresModule (N×N grid, contiguous filled shape; slug: counting-squares)
+  grocery_list.py    — GroceryListProblem dataclass + GroceryListModule (multiply-and-add with grocery emoji placeholders; slug: grocery-list)
 ```
 
 ## Locale support
@@ -27,6 +28,7 @@ tests/
   test_multiplication.py — unit tests for MultiplicationProblem and MultiplicationModule
   test_division.py       — unit tests for DivisionProblem and DivisionModule
   test_counting_squares.py — unit tests for CountingSquaresProblem and CountingSquaresModule
+  test_grocery_list.py     — unit tests for GroceryListProblem and GroceryListModule
   test_renderer.py       — tests for Typst source content and PDF output validity
 ```
 
