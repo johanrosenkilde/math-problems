@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from math_problems.module import Module
 
 
-_SYMBOLS = [
+_INGREDIENTS = [
     # Fruit & veg
     "🍌", "🍎", "🍒", "🍇", "🍊", "🍋", "🍐", "🍓", "🥕", "🌽",
     "🍉", "🥒", "🫑", "🍆", "🥦", "🧅",
@@ -15,7 +15,7 @@ _SYMBOLS = [
 ]
 
 _DIFFICULTY_SETTINGS: dict[int, tuple[int, tuple[int, int], tuple[int, int], tuple[int, int]]] = {
-    #  (page_symbols, per_problem_range, value_range, count_range)
+    #  (page_ingredients, per_problem_range, value_range, count_range)
     1: (3, (2, 2), (1, 5), (1, 3)),
     2: (4, (2, 3), (2, 9), (2, 5)),
     3: (5, (3, 3), (3, 12), (2, 4)),
@@ -28,7 +28,7 @@ _PREAMBLE = """\
 
 @dataclass
 class GroceryListProblem:
-    items: list[tuple[str, int]]  # (emoji, count) — symbols used in this problem
+    items: list[tuple[str, int]]  # (emoji, count) — ingredients in this problem
     legend: dict[str, int]  # full page legend: emoji -> value
 
     @property
@@ -49,9 +49,9 @@ class GroceryListModule(Module):
     def generate(self, n: int, difficulty: int) -> list[GroceryListProblem]:
         if difficulty not in _DIFFICULTY_SETTINGS:
             raise ValueError(f"Difficulty must be 1, 2, or 3, got {difficulty}.")
-        page_sym_count, per_problem_range, val_range, count_range = _DIFFICULTY_SETTINGS[difficulty]
-        chosen = random.sample(_SYMBOLS, page_sym_count)
-        values = random.sample(range(val_range[0], val_range[1] + 1), page_sym_count)
+        n_ingredients, per_problem_range, val_range, count_range = _DIFFICULTY_SETTINGS[difficulty]
+        chosen = random.sample(_INGREDIENTS, n_ingredients)
+        values = random.sample(range(val_range[0], val_range[1] + 1), n_ingredients)
         legend = dict(zip(chosen, values))
         problems = []
         for _ in range(n):

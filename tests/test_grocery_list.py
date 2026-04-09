@@ -4,7 +4,7 @@ from math_problems.grocery_list import (
     GroceryListModule,
     GroceryListProblem,
     _DIFFICULTY_SETTINGS,
-    _SYMBOLS,
+    _INGREDIENTS,
 )
 
 
@@ -14,7 +14,7 @@ def test_problem_result():
     assert GroceryListProblem([("🍎", 1)], legend).result == 3
 
 
-def test_problem_result_three_symbols():
+def test_problem_result_three_ingredients():
     legend = {"🍌": 10, "🍎": 3, "🍒": 5}
     assert GroceryListProblem([("🍌", 2), ("🍎", 4), ("🍒", 1)], legend).result == 37
 
@@ -31,7 +31,7 @@ def test_generate_returns_correct_type():
     for problem in GroceryListModule().generate(n=9, difficulty=1):
         assert isinstance(problem, GroceryListProblem)
         for emoji, count in problem.items:
-            assert emoji in _SYMBOLS
+            assert emoji in _INGREDIENTS
             assert isinstance(count, int)
 
 
@@ -52,9 +52,9 @@ def test_problem_items_are_subset_of_legend():
 
 @pytest.mark.parametrize("difficulty", _DIFFICULTY_SETTINGS)
 def test_difficulty_range(difficulty):
-    page_sym_count, (p_lo, p_hi), (v_lo, v_hi), (c_lo, c_hi) = _DIFFICULTY_SETTINGS[difficulty]
+    n_ingredients, (p_lo, p_hi), (v_lo, v_hi), (c_lo, c_hi) = _DIFFICULTY_SETTINGS[difficulty]
     problems = GroceryListModule().generate(n=50, difficulty=difficulty)
-    assert len(problems[0].legend) == page_sym_count
+    assert len(problems[0].legend) == n_ingredients
     for p in problems:
         assert p_lo <= len(p.items) <= p_hi
         for _, count in p.items:
@@ -63,7 +63,7 @@ def test_difficulty_range(difficulty):
         assert v_lo <= value <= v_hi
 
 
-def test_symbols_are_distinct_within_problem():
+def test_ingredients_are_distinct_within_problem():
     problems = GroceryListModule().generate(n=50, difficulty=3)
     for p in problems:
         emojis = [emoji for emoji, _ in p.items]
