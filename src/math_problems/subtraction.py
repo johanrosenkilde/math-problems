@@ -21,23 +21,20 @@ _PREAMBLE = """\
     text(size: 40pt)[\u2212], text(size: 40pt)[#b],
   )
   let w = measure(inner).width
-  grid(
-    columns: (auto, auto),
-    column-gutter: 8pt,
-    align: (right + top, left + top),
-    text(size: 14pt, weight: "bold")[#num.],
-    {
-      v(10pt)
-      inner
-      v(2pt)
-      line(length: w, stroke: 1.5pt)
-      v(30pt)
-      line(length: w, stroke: 1.5pt)
-      v(-8pt)
-      line(length: w, stroke: 1.5pt)
-      v(1cm)
-    }
-  )
+  let lbl = text(size: 14pt, weight: "bold")[#num.]
+  let lw = measure(lbl).width
+  box({
+    place(dx: -lw - 4pt, lbl)
+    v(10pt)
+    inner
+    v(2pt)
+    line(length: w, stroke: 1.5pt)
+    v(30pt)
+    line(length: w, stroke: 1.5pt)
+    v(-8pt)
+    line(length: w, stroke: 1.5pt)
+    v(1cm)
+  })
 }
 """
 

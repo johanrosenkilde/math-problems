@@ -11,25 +11,23 @@ _DIFFICULTY_SETTINGS: dict[int, tuple[int, int, int]] = {
 }
 
 _PREAMBLE = """\
-#let problem(num, n, cells) = {
-  let cell_size = if n <= 5 { 0.7cm } else if n == 6 { 0.6cm } else { 0.45cm }
+#let problem(num, n, cells) = context {
+  let cell_size = if n <= 5 { 0.7cm } else if n == 6 { 0.6cm } else if n <= 8 { 0.45cm } else { 0.38cm }
   let draw_cell(c) = if c == 1 {
     box(width: cell_size, height: cell_size, fill: black)
   } else {
     box(width: cell_size, height: cell_size, stroke: 0.5pt)
   }
-  grid(
-    columns: (auto, auto),
-    column-gutter: 8pt,
-    align: (right + top, left + top),
-    text(size: 14pt, weight: "bold")[#num.],
+  box({
+    text(size: 14pt, weight: "bold")[#num.]
+    v(4pt)
     grid(
       columns: range(n).map(_ => cell_size),
       rows: range(n).map(_ => cell_size),
-      gutter: 3pt,
+      gutter: if n <= 8 { 3pt } else { 2pt },
       ..cells.map(c => draw_cell(c)),
-    ),
-  )
+    )
+  })
 }
 """
 
@@ -119,7 +117,7 @@ class CountingSquaresModule(Module):
   #grid(
     columns: (auto, auto, auto),
     column-gutter: 1cm,
-    row-gutter: 2cm,
+    row-gutter: 0.8cm,
     {problem_calls}
   )
 ]

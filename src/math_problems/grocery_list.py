@@ -23,7 +23,7 @@ _DIFFICULTY_SETTINGS: dict[int, tuple[int, tuple[int, int], tuple[int, int], tup
 
 _PREAMBLE = """\
 #set text(font: ("New Computer Modern", "Apple Color Emoji"))
-#set page(margin: (top: 2.5cm, left: 2.5cm, right: 2.5cm, bottom: 1.2cm))
+#set page(margin: (top: 2.5cm, left: 3cm, right: 2.5cm, bottom: 1.2cm))
 """
 
 
@@ -130,7 +130,7 @@ class GroceryListModule(Module):
 #grid(
     columns: (1fr, 1fr, 1fr),
     rows: ({row_h_mm}mm, {row_h_mm}mm, {row_h_mm}mm),
-    column-gutter: 0.8cm,
+    column-gutter: 0.7cm,
     row-gutter: 0cm,
     align: (left + top),
     {problem_calls}
@@ -223,19 +223,16 @@ class GroceryListModule(Module):
     {stack_items},
   )
   let w = measure(inner).width
-  grid(
-    columns: (auto, auto),
-    column-gutter: 8pt,
-    align: (right + top, left + top),
-    text(size: 14pt, weight: "bold")[{num}.],
-    {{
-      inner
-      v(2pt)
-      line(length: w, stroke: 1.5pt)
-      v(14pt)
-      line(length: w, stroke: 1.5pt)
-      v(-8pt)
-      line(length: w, stroke: 1.5pt)
-    }}
-  )
+  let lbl = text(size: 14pt, weight: "bold")[{num}.]
+  let lw = measure(lbl).width
+  box({{
+    place(dx: -lw - 4pt, lbl)
+    inner
+    v(2pt)
+    line(length: w, stroke: 1.5pt)
+    v(14pt)
+    line(length: w, stroke: 1.5pt)
+    v(-8pt)
+    line(length: w, stroke: 1.5pt)
+  }})
 }}"""
