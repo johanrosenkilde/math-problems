@@ -31,7 +31,7 @@ def test_typ_source_contains_answers():
 
 def test_typ_source_has_answer_block():
     source = build_typ_source(PAGES)
-    assert "#v(1fr)" in source
+    assert "place(bottom + center)" in source
 
 
 def test_typ_source_has_problem_numbering():

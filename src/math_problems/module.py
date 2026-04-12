@@ -53,18 +53,17 @@ def build_page_layout(
     else:
         grid_section = f"#grid(\n    {grid_body}\n  )"
 
+    # place(bottom) is absolute-positioned and emitted before the grid,
+    # so the answer line is always on page 1 even if the grid overflows.
     return (
+        f"#place(bottom + center)[\n"
+        f"  #text(size: {answer_size})[{answer_text}]\n"
+        f"]\n"
         f"#align(center)[\n"
         f"  #text(size: 24pt, weight: \"bold\")[{title}]\n"
         f"]\n"
         f"{header_section}\n"
-        f"{grid_section}\n"
-        f"\n"
-        f"#v(1fr)\n"
-        f"\n"
-        f"#align(center)[\n"
-        f"  #text(size: {answer_size})[{answer_text}]\n"
-        f"]"
+        f"{grid_section}"
     )
 
 
