@@ -1,7 +1,7 @@
 import random
 from dataclasses import dataclass
 
-from math_problems.module import Module
+from math_problems.module import Module, build_page_layout
 
 
 _INGREDIENTS = [
@@ -105,42 +105,31 @@ class GroceryListModule(Module):
             self._problem_call(start_num + i, p)
             for i, p in enumerate(problems)
         )
-        answer_text = "#h(0.5cm)".join(
-            f"{start_num + i}. {p.result}"
-            for i, p in enumerate(problems)
-        )
         # A4 content area: 297mm − 25mm top − 12mm bottom = 260mm.
         # Reserve header (~50mm) and answer line (~8mm); the rest is
-        # split into 3 equal rows with 0.2cm gutters between them.
+        # split into 3 equal rows.
         row_h_mm = (260 - 50 - 8) // 3  # = 67mm
 
-        return f"""\
-#align(center)[
-  #text(size: 24pt, weight: "bold")[{self.title(locale)}]
-]
-
-#v(0.3cm)
-
-#align(center)[
-  #text(size: 20pt)[{legend_str}]
-]
-
-#v(0.5cm)
-
-#grid(
-    columns: (1fr, 1fr, 1fr),
-    rows: ({row_h_mm}mm, {row_h_mm}mm, {row_h_mm}mm),
-    column-gutter: 0.7cm,
-    row-gutter: 0cm,
-    align: (left + top),
-    {problem_calls}
-  )
-
-#v(1fr)
-
-#align(center)[
-  #text(size: 12pt)[{answer_text}]
-]"""
+        header = (
+            f"#v(0.3cm)\n\n"
+            f"#align(center)[\n"
+            f"  #text(size: 20pt)[{legend_str}]\n"
+            f"]\n\n"
+            f"#v(0.5cm)"
+        )
+        return build_page_layout(
+            self.title(locale), problem_calls,
+            [(start_num + i, p.result) for i, p in enumerate(problems)],
+            header=header,
+            columns="(1fr, 1fr, 1fr)",
+            rows=f"({row_h_mm}mm, {row_h_mm}mm, {row_h_mm}mm)",
+            column_gutter="0.7cm",
+            row_gutter="0cm",
+            grid_align="(left + top)",
+            center_grid=False,
+            answer_separator="#h(0.5cm)",
+            answer_size="12pt",
+        )
 
     def _problem_call(self, num: int, p: GroceryListProblem) -> str:
         # Dynamic font size and spacing so each problem fills its grid cell.

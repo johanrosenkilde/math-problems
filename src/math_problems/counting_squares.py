@@ -1,7 +1,7 @@
 import random
 from dataclasses import dataclass
 
-from math_problems.module import Module
+from math_problems.module import Module, build_page_layout
 
 
 _DIFFICULTY_SETTINGS: dict[int, tuple[int, int, int]] = {
@@ -102,26 +102,8 @@ class CountingSquaresModule(Module):
             f"problem({start_num + i}, {p.n}, {cells_str(p)})"
             for i, p in enumerate(problems)
         )
-        answer_text = "#h(1cm)".join(
-            f"{start_num + i}. {p.result}"
-            for i, p in enumerate(problems)
+        return build_page_layout(
+            self.title(locale), problem_calls,
+            [(start_num + i, p.result) for i, p in enumerate(problems)],
+            column_gutter="1cm", row_gutter="0.8cm",
         )
-        return f"""\
-#align(center)[
-  #text(size: 24pt, weight: "bold")[{self.title(locale)}]
-]
-
-#v(0.8cm)
-
-#align(center)[
-  #grid(
-    columns: (auto, auto, auto),
-    column-gutter: 1cm,
-    row-gutter: 0.8cm,
-    {problem_calls}
-  )
-]
-
-#place(bottom + center)[
-  #text(size: 12pt)[{answer_text}]
-]"""

@@ -1,7 +1,7 @@
 import random
 from dataclasses import dataclass
 
-from math_problems.module import Module
+from math_problems.module import Module, arithmetic_preamble, build_page_layout
 
 
 _DIFFICULTY_RANGES: dict[int, tuple[int, int]] = {
@@ -10,33 +10,7 @@ _DIFFICULTY_RANGES: dict[int, tuple[int, int]] = {
     3: (100, 499),
 }
 
-_PREAMBLE = """\
-#let problem(num, a, b) = context {
-  let inner = grid(
-    columns: (auto, auto),
-    column-gutter: 0pt,
-    row-gutter: 18pt,
-    align: (left, right),
-    [], text(size: 40pt)[#a],
-    text(size: 40pt)[+], text(size: 40pt)[#b],
-  )
-  let w = measure(inner).width
-  let lbl = text(size: 14pt, weight: "bold")[#num.]
-  let lw = measure(lbl).width
-  box({
-    place(dx: -lw - 4pt, lbl)
-    v(10pt)
-    inner
-    v(2pt)
-    line(length: w, stroke: 1.5pt)
-    v(30pt)
-    line(length: w, stroke: 1.5pt)
-    v(-8pt)
-    line(length: w, stroke: 1.5pt)
-    v(1cm)
-  })
-}
-"""
+_PREAMBLE = arithmetic_preamble("+")
 
 
 @dataclass
@@ -79,26 +53,7 @@ class AdditionModule(Module):
             f"problem({start_num + i}, {p.a}, {p.b})"
             for i, p in enumerate(problems)
         )
-        answer_text = "#h(1cm)".join(
-            f"{start_num + i}. {p.result}"
-            for i, p in enumerate(problems)
+        return build_page_layout(
+            self.title(locale), problem_calls,
+            [(start_num + i, p.result) for i, p in enumerate(problems)],
         )
-        return f"""\
-#align(center)[
-  #text(size: 24pt, weight: "bold")[{self.title(locale)}]
-]
-
-#v(0.8cm)
-
-#align(center)[
-  #grid(
-    columns: (auto, auto, auto),
-    column-gutter: 2.5cm,
-    row-gutter: 1.6cm,
-    {problem_calls}
-  )
-]
-
-#place(bottom + center)[
-  #text(size: 12pt)[{answer_text}]
-]"""
